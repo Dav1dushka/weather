@@ -100,7 +100,7 @@ function getLocationWeather(){
             const lon = position.coords.longitude;
 
             const weatherResponse = await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto`
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
 );
 
             const weatherData = await weatherResponse.json();
