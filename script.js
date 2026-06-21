@@ -100,19 +100,51 @@ function getLocationWeather(){
             const lon = position.coords.longitude;
 
             const weatherResponse = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`
-            );
+`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto`
+);
 
             const weatherData = await weatherResponse.json();
 
-            weatherDiv.innerHTML = `
-                <div class="weather-card">
-                    <h2>📍 Ваше местоположение</h2>
-                    <h1>${weatherData.current.temperature_2m}°C</h1>
-                    <p>💧 ${weatherData.current.relative_humidity_2m}%</p>
-                    <p>💨 ${weatherData.current.wind_speed_10m} км/ч</p>
-                </div>
-            `;
+           weatherDiv.innerHTML = `
+<div class="weather-card">
+
+<h2>${name}, ${country}</h2>
+
+<h1>${weatherData.current.temperature_2m}°C</h1>
+
+<p>
+🌡 Ощущается как:
+${weatherData.current.apparent_temperature}°C
+</p>
+
+<p>
+💧 Влажность:
+${weatherData.current.relative_humidity_2m}%
+</p>
+
+<p>
+💨 Ветер:
+${weatherData.current.wind_speed_10m} км/ч
+</p>
+
+<p>
+🌅 Восход:
+${weatherData.daily.sunrise[0].slice(11)}
+</p>
+
+<p>
+🌇 Закат:
+${weatherData.daily.sunset[0].slice(11)}
+</p>
+
+<h3>Прогноз на 7 дней</h3>
+
+<div class="forecast">
+${forecastHTML}
+</div>
+
+</div>
+`;
         },
         ()=>{
             alert("Не удалось получить геолокацию");
