@@ -86,3 +86,36 @@ async function getWeather() {
         console.error(error);
     }
 }
+
+const locationBtn = document.getElementById("locationBtn");
+
+locationBtn.addEventListener("click", getLocationWeather);
+
+function getLocationWeather(){
+
+    navigator.geolocation.getCurrentPosition(
+        async(position)=>{
+
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            const weatherResponse = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`
+            );
+
+            const weatherData = await weatherResponse.json();
+
+            weatherDiv.innerHTML = `
+                <div class="weather-card">
+                    <h2>📍 Ваше местоположение</h2>
+                    <h1>${weatherData.current.temperature_2m}°C</h1>
+                    <p>💧 ${weatherData.current.relative_humidity_2m}%</p>
+                    <p>💨 ${weatherData.current.wind_speed_10m} км/ч</p>
+                </div>
+            `;
+        },
+        ()=>{
+            alert("Не удалось получить геолокацию");
+        }
+    );
+}
