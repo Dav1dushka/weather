@@ -91,91 +91,59 @@ const locationBtn = document.getElementById("locationBtn");
 
 locationBtn.addEventListener("click", getLocationWeather);
 
-function getLocationWeather(){
+async function getLocationWeather() {
 
     navigator.geolocation.getCurrentPosition(
-        async(position)=>{
+
+        async (position) => {
 
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
-            const weatherResponse = await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
-);
+            try {
 
-            const weatherData = await weatherResponse.json();
+                const weatherResponse = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m`
+                );
 
-           weatherDiv.innerHTML = `...`;
-        const ctx =
-document.getElementById("tempChart");
+                const weatherData = await weatherResponse.json();
 
-if(window.weatherChart){
-    window.weatherChart.destroy();
-}
+                weatherDiv.innerHTML = `
+                    <div class="weather-card">
 
-window.weatherChart = new Chart(ctx, {
+                        <h2>📍 Ваше местоположение</h2>
 
-    type: "line",
+                        <h1>${weatherData.current.temperature_2m}°C</h1>
 
-    data: {
+                        <p>
+                        🌡 Ощущается как:
+                        ${weatherData.current.apparent_temperature}°C
+                        </p>
 
-        labels: weatherData.daily.time,
+                        <p>
+                        💧 Влажность:
+                        ${weatherData.current.relative_humidity_2m}%
+                        </p>
 
-        datasets: [{
+                        <p>
+                        💨 Ветер:
+                        ${weatherData.current.wind_speed_10m} км/ч
+                        </p>
 
-            label: "Макс. температура",
+                    </div>
+                `;
 
-            data:
-            weatherData.daily.temperature_2m_max
+            } catch (error) {
+                console.error(error);
+                weatherDiv.innerHTML =
+                    "<p>Ошибка загрузки погоды</p>";
+            }
 
-        }]
-
-    }
-
-});
-            
-<div class="weather-card">
-
-<h2>${name}, ${country}</h2>
-
-<h1>${weatherData.current.temperature_2m}°C</h1>
-
-<p>
-🌡 Ощущается как:
-${weatherData.current.apparent_temperature}°C
-</p>
-
-<p>
-💧 Влажность:
-${weatherData.current.relative_humidity_2m}%
-</p>
-
-<p>
-💨 Ветер:
-${weatherData.current.wind_speed_10m} км/ч
-</p>
-
-<p>
-🌅 Восход:
-${weatherData.daily.sunrise[0].slice(11)}
-</p>
-
-<p>
-🌇 Закат:
-${weatherData.daily.sunset[0].slice(11)}
-</p>
-
-<h3>Прогноз на 7 дней</h3>
-
-<div class="forecast">
-${forecastHTML}
-</div>
-
-</div>
-`;
         },
-        ()=>{
+
+        () => {
             alert("Не удалось получить геолокацию");
         }
+
     );
 }
