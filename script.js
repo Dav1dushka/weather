@@ -4,40 +4,85 @@ const weatherDiv = document.getElementById("weather");
 
 searchBtn.addEventListener("click", getWeather);
 
+cityInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        getWeather();
+    }
+});
+
 async function getWeather() {
 
-    const city = cityInput.value;
+    const city = cityInput.value.trim();
+
+    if (!city) {
+        weatherDiv.innerHTML = "<p>Введите название города</p>";
+        return;
+    }
+
+    weatherDiv.innerHTML = "<p>Загрузка...</p>";
 
     try {
 
         const geoResponse = await fetch(
-            `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1`
+            `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=ru&format=json`
         );
 
         const geoData = await geoResponse.json();
-        
-        if (!geoData.results) {
-            weatherDiv.innerHTML = "Город не найден";
+
+        if (!geoData.results || geoData.results.length === 0) {
+            weatherDiv.innerHTML = "<p>Город не найден</p>";
             return;
         }
 
-        const { latitude, longitude, name } = geoData.results[0];
+        const {
+            latitude,
+            longitude,
+            name,
+            country
+        } = geoData.results[0];
 
-       const weatherResponse = await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`
-);
+        const weatherResponse = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`
+        );
 
         const weatherData = await weatherResponse.json();
 
+        let forecastHTML = "";
+
+        for (let i = 0; i < 7; i++) {
+            forecastHTML += `
+                <div class="forecast-day">
+                    <p>${weatherData.daily.time[i]}</p>
+                    <p>⬆ ${weatherData.daily.temperature_2m_max[i]}°C</p>
+                    <p>⬇ ${weatherData.daily.temperature_2m_min[i]}°C</p>
+                </div>
+            `;
+        }
+
         weatherDiv.innerHTML = `
-    <h2>${name}</h2>
-    <p>🌡 Температура: ${weatherData.current.temperature_2m}°C</p>
-    <p>💧 Влажность: ${weatherData.current.relative_humidity_2m}%</p>
-    <p>💨 Ветер: ${weatherData.current.wind_speed_10m} км/ч</p>
-`;
+            <div class="weather-card">
+                <h2>${name}, ${country}</h2>
+
+                <h1>${weatherData.current.temperature_2m}°C</h1>
+
+                <p>💧 Влажность: ${weatherData.current.relative_humidity_2m}%</p>
+
+                <p>💨 Ветер: ${weatherData.current.wind_speed_10m} км/ч</p>
+
+                <h3>Прогноз на 7 дней</h3>
+
+                <div class="forecast">
+                    ${forecastHTML}
+                </div>
+            </div>
         `;
 
-    } catch(error) {
-        weatherDiv.innerHTML = "Ошибка загрузки данных";
+    } catch (error) {
+
+        weatherDiv.innerHTML = `
+            <p>Ошибка загрузки данных.</p>
+        `;
+
+        console.error(error);
     }
 }
