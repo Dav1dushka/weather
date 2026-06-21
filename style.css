@@ -69,7 +69,24 @@ button:hover{
 }
 
 .weather-card{
-    margin-top:20px;
+    margin-top:25px;
+
+    background:linear-gradient(
+        135deg,
+        #60a5fa,
+        #2563eb
+    );
+
+    color:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.2);
+
+    animation:fadeIn .4s ease;
 }
 
 .weather-card h2{
@@ -77,8 +94,8 @@ button:hover{
 }
 
 .weather-card h1{
-    font-size:48px;
-    margin-bottom:15px;
+    font-size:60px;
+    margin:10px 0;
 }
 
 .weather-card p{
@@ -110,4 +127,18 @@ button:hover{
 
     max-width:100%;
 
+}
+
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
