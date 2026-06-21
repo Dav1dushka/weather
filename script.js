@@ -59,7 +59,9 @@ async function getWeather() {
 `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`
 );
         const weatherData = await weatherResponse.json();
-
+const icon = getWeatherIcon(
+    weatherData.current.weather_code
+);
         let forecastHTML = "";
 
         for (let i = 0; i < 7; i++) {
@@ -117,83 +119,51 @@ async function getLocationWeather() {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
-            const geoResponse = await fetch(
-            `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}`
-            );
-
-            const geoData = await geoResponse.json();
-
-            console.log(geoData);
+            const weatherResponse = await fetch(
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code`
+);
             try {
 
                 const weatherResponse = await fetch(
                     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m`
                 );
 
-                const icon = getWeatherIcon(
-                weatherData.current.weather_code
-                  );
                 const weatherData = await weatherResponse.json();
 
+const icon = getWeatherIcon(
+weatherData.current.weather_code
+);
+
                 weatherDiv.innerHTML = `
-                    <div class="weather-card">
+<div class="weather-card">
 
-                        <h2>📍 Ваше местоположение</h2>
+    <h2>📍 Ваше местоположение</h2>
 
-                        <p>
-                        ${formatDay(
-                         weatherData.daily.time[i]
-                        )}
-                        </p>
+    <h1>
+        ${icon}
+        <br>
+        ${weatherData.current.temperature_2m}°C
+    </h1>
 
-                        <p>
-                        🌡 Ощущается как:
-                        ${weatherData.current.apparent_temperature}°C
-                        </p>
+    <p>
+    🌡 Ощущается как:
+    ${weatherData.current.apparent_temperature}°C
+    </p>
 
-                        <p>
-                        💧 Влажность:
-                        ${weatherData.current.relative_humidity_2m}%
-                        </p>
+    <p>
+    💧 Влажность:
+    ${weatherData.current.relative_humidity_2m}%
+    </p>
 
-                        <p>
-                        💨 Ветер:
-                        ${weatherData.current.wind_speed_10m} км/ч
-                        </p>
+    <p>
+    💨 Ветер:
+    ${weatherData.current.wind_speed_10m} км/ч
+    </p>
 
-                    </div>
-                `;
-const ctx =
-document.getElementById("tempChart");
+</div>
+`;
 
-if(window.weatherChart){
-    window.weatherChart.destroy();
-}
 
-window.weatherChart =
-new Chart(ctx, {
-
-    type:"line",
-
-    data:{
-
-        labels:
-        weatherData.daily.time,
-
-        datasets:[{
-
-            label:"Температура",
-
-            data:
-            weatherData.daily.temperature_2m_max,
-
-            tension:.4,
-
-            fill:true
-
-        }]
-    }
-});
             } catch (error) {
                 console.error(error);
                 weatherDiv.innerHTML =
