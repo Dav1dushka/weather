@@ -10,8 +10,17 @@ cityInput.addEventListener("keydown", (event) => {
     }
 });
 
+
 async function getWeather() {
 
+    function getWeatherIcon(code) {
+    if (code === 0) return "☀️";
+    if (code <= 3) return "⛅";
+    if (code <= 48) return "☁️";
+    if (code <= 67) return "🌧️";
+    if (code <= 77) return "❄️";
+    return "⛈️";
+}
     const city = cityInput.value.trim();
 
     if (!city) {
