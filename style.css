@@ -36,3 +36,21 @@ button{
 #weather{
     margin-top:20px;
 }
+
+
+.weather-card{
+    margin-top:20px;
+    background:#f8fafc;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.weather-card h2{
+    margin-bottom:15px;
+}
+
+.weather-card p{
+    margin:10px 0;
+    font-size:18px;
+}
