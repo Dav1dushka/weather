@@ -54,3 +54,17 @@ button{
     margin:10px 0;
     font-size:18px;
 }
+
+
+.forecast {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.forecast-day {
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 10px;
+}
