@@ -123,10 +123,13 @@ button:hover{
 
 #tempChart{
 
-    margin-top:20px;
+    margin-top:25px;
 
-    max-width:100%;
+    background:white;
 
+    border-radius:20px;
+
+    padding:15px;
 }
 
 
