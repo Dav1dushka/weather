@@ -105,7 +105,35 @@ function getLocationWeather(){
 
             const weatherData = await weatherResponse.json();
 
-           weatherDiv.innerHTML = `
+           weatherDiv.innerHTML = `...`;
+        const ctx =
+document.getElementById("tempChart");
+
+if(window.weatherChart){
+    window.weatherChart.destroy();
+}
+
+window.weatherChart = new Chart(ctx, {
+
+    type: "line",
+
+    data: {
+
+        labels: weatherData.daily.time,
+
+        datasets: [{
+
+            label: "Макс. температура",
+
+            data:
+            weatherData.daily.temperature_2m_max
+
+        }]
+
+    }
+
+});
+            
 <div class="weather-card">
 
 <h2>${name}, ${country}</h2>
