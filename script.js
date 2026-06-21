@@ -10,17 +10,22 @@ cityInput.addEventListener("keydown", (event) => {
     }
 });
 
+function getWeatherIcon(code){
 
-async function getWeather() {
+    if(code === 0) return "☀️";
 
-    function getWeatherIcon(code) {
-    if (code === 0) return "☀️";
-    if (code <= 3) return "⛅";
-    if (code <= 48) return "☁️";
-    if (code <= 67) return "🌧️";
-    if (code <= 77) return "❄️";
+    if(code <= 3) return "⛅";
+
+    if(code <= 48) return "☁️";
+
+    if(code <= 67) return "🌧️";
+
+    if(code <= 77) return "❄️";
+
     return "⛈️";
 }
+async function getWeather() {
+
     const city = cityInput.value.trim();
 
     if (!city) {
@@ -50,10 +55,9 @@ async function getWeather() {
             country
         } = geoData.results[0];
 
-        const weatherResponse = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`
-        );
-
+       const weatherResponse = await fetch(
+`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`
+);
         const weatherData = await weatherResponse.json();
 
         let forecastHTML = "";
@@ -122,6 +126,9 @@ async function getLocationWeather() {
                     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m`
                 );
 
+                const icon = getWeatherIcon(
+                weatherData.current.weather_code
+                  );
                 const weatherData = await weatherResponse.json();
 
                 weatherDiv.innerHTML = `
@@ -129,7 +136,11 @@ async function getLocationWeather() {
 
                         <h2>📍 Ваше местоположение</h2>
 
-                        <h1>${weatherData.current.temperature_2m}°C</h1>
+                        <p>
+                        ${formatDay(
+                         weatherData.daily.time[i]
+                        )}
+                        </p>
 
                         <p>
                         🌡 Ощущается как:
@@ -148,7 +159,37 @@ async function getLocationWeather() {
 
                     </div>
                 `;
+const ctx =
+document.getElementById("tempChart");
 
+if(window.weatherChart){
+    window.weatherChart.destroy();
+}
+
+window.weatherChart =
+new Chart(ctx, {
+
+    type:"line",
+
+    data:{
+
+        labels:
+        weatherData.daily.time,
+
+        datasets:[{
+
+            label:"Температура",
+
+            data:
+            weatherData.daily.temperature_2m_max,
+
+            tension:.4,
+
+            fill:true
+
+        }]
+    }
+});
             } catch (error) {
                 console.error(error);
                 weatherDiv.innerHTML =
