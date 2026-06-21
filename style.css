@@ -103,3 +103,11 @@ button:hover{
 
     border-radius:10px;
 }
+
+#tempChart{
+
+    margin-top:20px;
+
+    max-width:100%;
+
+}
