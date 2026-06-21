@@ -100,6 +100,13 @@ async function getLocationWeather() {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
+            const geoResponse = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}`
+            );
+
+            const geoData = await geoResponse.json();
+
+            console.log(geoData);
             try {
 
                 const weatherResponse = await fetch(
