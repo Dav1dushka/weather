@@ -119,20 +119,18 @@ async function getLocationWeather() {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
-            const weatherResponse = await fetch(
-`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code`
-);
             try {
 
                 const weatherResponse = await fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m`
+                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code`
                 );
 
                 const weatherData = await weatherResponse.json();
 
-const icon = getWeatherIcon(
-weatherData.current.weather_code
-);
+                const icon = getWeatherIcon(
+                    weatherData.current.weather_code
+                );
+
 
                 weatherDiv.innerHTML = `
 <div class="weather-card">
