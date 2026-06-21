@@ -76,7 +76,11 @@ async function getWeather() {
             <div class="weather-card">
                 <h2>${name}, ${country}</h2>
 
-                <h1>${weatherData.current.temperature_2m}°C</h1>
+                <h1>
+                ${icon}
+                <br>
+                ${weatherData.current.temperature_2m}°C
+                </h1>
 
                 <p>💧 Влажность: ${weatherData.current.relative_humidity_2m}%</p>
 
