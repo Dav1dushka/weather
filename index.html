@@ -1,38 +1,44 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Check current conditions and a seven-day forecast for a city or your current location.">
+    <meta name="theme-color" content="#edf4ff">
     <title>Weather App</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
+    <main class="weather-shell">
+        <header class="page-header">
+            <div class="brand-mark" aria-hidden="true">W</div>
+            <div>
+                <p class="eyebrow">WEATHER, AT A GLANCE</p>
+                <h1>Weather App</h1>
+                <p class="page-subtitle">Current conditions and a seven-day forecast.</p>
+            </div>
+        </header>
 
-<div class="container">
+        <section class="search-panel" aria-label="Find weather">
+            <form id="weatherForm" class="search-form">
+                <label class="visually-hidden" for="city">City name</label>
+                <input id="city" name="city" type="search" placeholder="Search for a city" autocomplete="off" required>
+                <button id="searchBtn" class="button button-primary" type="submit">Search</button>
+            </form>
+            <span class="separator" aria-hidden="true">or</span>
+            <button id="locationBtn" class="button button-location" type="button">
+                <span aria-hidden="true">⌖</span> Use my location
+            </button>
+        </section>
 
-    <h1>Weather App</h1>
+        <p id="statusMessage" class="status-message" role="status" aria-live="polite">Search for a city to see its forecast.</p>
 
-    <input
-        type="text"
-        id="city"
-        placeholder="Введите город"
-    >
+        <section id="weather" class="weather-results" aria-label="Weather forecast" aria-live="polite"></section>
 
-    <button id="searchBtn">
-        Поиск
-    </button>
-
-    <button id="locationBtn">
-        📍 Мое местоположение
-    </button>
-
-    <div id="loader" class="loader hidden"></div>
-
-    <div id="weather"></div>
-
-</div>
-
-<script src="script.js"></script>
-
+        <footer class="page-footer">
+            <p>Forecast data by <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>. Location access is used only when you choose the location button.</p>
+        </footer>
+    </main>
 </body>
 </html>
