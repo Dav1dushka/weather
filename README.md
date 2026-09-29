@@ -1,23 +1,33 @@
 # Weather App
 
-A small weather dashboard for looking up a city or checking the forecast for your current location. It uses the Open-Meteo APIs and is built with plain HTML, CSS, and JavaScript.
+A React and TypeScript weather dashboard for checking current conditions and a seven-day forecast by city or device location. Weather data comes from the Open-Meteo APIs.
 
 ![Weather dashboard showing a seven-day forecast for Livorno](assets/weather-app.png)
 
-## Features
+## What it does
 
-- Search for a city and view its current conditions.
-- Show a seven-day forecast with daily highs and lows.
-- Request browser location access only when the user chooses it.
-- Handle missing cities, API failures, and location permission errors with clear messages.
-- Use the layout on desktop and mobile screens.
+- Search for a city and view current conditions plus a seven-day forecast.
+- Ask for browser location only when the user selects **Use my location**.
+- Show loading, no-results, API-error, location-permission, and timeout states.
+- Cancel an older network request when a newer search starts, so late responses cannot replace the latest result.
+- Use a responsive forecast layout on desktop and mobile screens.
 
 ## Run locally
 
-1. Clone this repository or download the project files.
-2. Open `index.html` in a modern browser.
+You need Node.js 20.19+ or 22.12+.
 
-No package installation or build command is required. Browser geolocation works on secure contexts such as HTTPS and localhost; some browsers block it when the page is opened directly from disk.
+```bash
+pnpm install
+pnpm dev
+```
+
+Vite prints the local URL in the terminal. To create a production build, run:
+
+```bash
+pnpm build
+```
+
+Browser geolocation works on secure contexts such as HTTPS and localhost. Some browsers block it when the page is opened directly from disk.
 
 ## Data and APIs
 
@@ -25,14 +35,28 @@ No package installation or build command is required. Browser geolocation works 
 - [Open-Meteo Forecast API](https://open-meteo.com/en/docs) provides current conditions and the daily forecast.
 - The browser's Geolocation API provides coordinates only after the user requests location access and grants permission.
 
-The app does not store or transmit a location beyond the weather request needed to show the forecast.
+The app does not store a location. Coordinates are held only while requesting the forecast needed to display the result.
 
-## Project files
+## Implementation notes
 
-- `index.html` contains the search form and forecast regions.
-- `style.css` contains the responsive interface.
-- `script.js` contains API requests, loading and error states, and forecast rendering.
+- React state controls the search, request status, and forecast display.
+- TypeScript describes the API data used by the interface. The API layer checks the response shape before rendering it.
+- `AbortController` cancels an outdated fetch when the user starts a new search.
+- City names and query parameters are encoded with `URLSearchParams`.
+- The search form, loading message, forecast labels, and keyboard focus states support accessible use.
+
+## Project structure
+
+```text
+src/
+  lib/
+    api.ts             Fetch and validate the Open-Meteo responses
+    weather-codes.ts   Map weather codes to labels and icons
+  App.tsx              Search, request state, and forecast components
+  main.tsx             React entry point
+  styles.css           Responsive layout and visual styles
+```
 
 ## Built with
 
-HTML · CSS · JavaScript · Fetch API · Open-Meteo
+React · TypeScript · Vite · Fetch API · Open-Meteo
